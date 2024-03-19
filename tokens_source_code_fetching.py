@@ -3,6 +3,7 @@ from github import Github
 from github import Auth
 import time
 import pickle
+import os
 
 
 def save_repo(username='OpenZeppelin', reponame='openzeppelin-contracts', filename='repo'):
@@ -44,9 +45,16 @@ def fetch_tokens(repo, releases_filename='releases.txt'):
     with open(releases_filename, 'r') as file:
         releases = file.read().split('\n')
 
+    p = os.path.dirname(__file__)
+    folder_path = os.path.join(p, 'token_releases_codes')
+
+    if not os.path.exists(folder_path):
+        os.mkdir(folder_path)
 
     cnt=1
     for i,r in enumerate(releases):
+        if os.path.join(folder_path, f"{r}.sol"):
+            continue
         if cnt==rate_limit-1:
             break
         time.sleep(.1)
